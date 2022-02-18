@@ -1,6 +1,8 @@
 class Stack:
 
-    def __init__(self, stack: list):
+    def __init__(self, stack=None):
+        if stack is None:
+            stack = []
         self.stack = stack
 
     def is_empty(self):  # проверка стека на пустоту. Метод возвращает True или False.
@@ -21,37 +23,24 @@ class Stack:
     def size(self):  # возвращает количество элементов в стеке.
         return len(self.stack)
 
-    def bracket_balance_check(self):
-        # Скобки сбалансированы если количество открывающих равно количеству закрывающих скобок, что проверяется
-        # счетчиками в словаре brackets. Также необходимо, чтобы перед каждой закрывающей скобкой была открывающая,
-        # а не наоборот. Это происходит только, если ни один из счетчиков не становится ниже 0.
-        brackets = {'(': 0, '{': 0, '[': 0}
-        for element in self.stack:
-            if element not in ['(', ')', '[', ']', '{', '}']:
-                return 'Для проверки стэк должен состоять только из скобок'
-            else:
-                if element in brackets.keys():
-                    brackets[element] += 1
-                elif element == ')':
-                    brackets['('] -= 1
-                    if brackets['('] < 0:
-                        return 'Несбалансированно'
-                elif element == ']':
-                    brackets['['] -= 1
-                    if brackets['['] < 0:
-                        return 'Несбалансированно'
-                elif element == '}':
-                    brackets['{'] -= 1
-                    if brackets['{'] < 0:
-                        return 'Несбалансированно'
-        for value in brackets.values():
-            if value != 0:
-                return 'Несбалансированно'
+
+def bracket_balance_check():
+    string = input('Введите скобки: ')
+    open_brackets = ['(', '[', '{']
+    closed_brackets = [')', ']', '}']
+    check = Stack()
+    for bracket in string:
+        if bracket in open_brackets:
+            check.push(bracket)
+        elif bracket in closed_brackets:
+            if check.size() == 0 or open_brackets[closed_brackets.index(bracket)] != check.peek():
+                return 'Несбалансировано'
+            check.pop()
+    if check.size() != 0:
+        return 'Несбалансировано'
+    else:
         return 'Сбалансировано'
 
 
 if __name__ == '__main__':
-    stringed = input('Введите стэк: ')  # Преобразование строки в список для создания стэка
-    listed = [char for char in stringed]
-    test_stack = Stack(listed)
-    print(test_stack.bracket_balance_check())
+    print(bracket_balance_check())
